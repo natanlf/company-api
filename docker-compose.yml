@@ -1,0 +1,27 @@
+version: "3.9"
+
+networks:
+  company-network:
+    driver: bridge
+
+services:
+  company-mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3306:3306"
+    networks:
+      - company-network
+
+  company-api:
+    image: company-api
+    command: ["/wait-for-it.sh", "company-mysql:3306", "-t", "30", "--", "java", "-jar", "api.jar"]
+    environment:
+      DATABASE_HOST: company-mysql
+    ports:
+      - "8080:8080"
+    networks:
+      - company-network
+    depends_on:
+      - company-mysql

@@ -1,0 +1,1 @@
+alter table `employee` add cellphone varchar(15);
