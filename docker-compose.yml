@@ -19,9 +19,18 @@ services:
     command: ["/wait-for-it.sh", "company-mysql:3306", "-t", "30", "--", "java", "-jar", "api.jar"]
     environment:
       DATABASE_HOST: company-mysql
-    ports:
-      - "8080:8080"
+      SPRING_PROFILES_ACTIVE: development
     networks:
       - company-network
     depends_on:
       - company-mysql
+
+  company-proxy:
+    build: ./nginx
+    image: company-proxy
+    ports:
+      - "80:80"
+    networks:
+      - company-network
+    depends_on:
+      - company-api
